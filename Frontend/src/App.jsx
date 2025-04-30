@@ -1,7 +1,7 @@
 import "./App.css";
 import '@fontsource-variable/inter';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Home, Login, Register } from "./Pages/";
+import { Home } from "./Pages/";
 import Layout from "./Layout";
 
 const router = createBrowserRouter([
@@ -11,14 +11,6 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
-      },
-      {
-        path: "/Login",
-        element: <Login />,
-      },
-      {
-        path: "/Register",
-        element: <Register />,
       },
     ],
   },

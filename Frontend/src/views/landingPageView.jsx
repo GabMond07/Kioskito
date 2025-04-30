@@ -2,7 +2,7 @@ function LandingPageView() {
 
     return (
       <>
-        <div className="flex-grow">
+        <div className="h-screen">
           <h1>Hola Mundo</h1>
         </div>
       </>
