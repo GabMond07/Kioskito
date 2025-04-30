@@ -16,6 +16,7 @@ function Navigation() {
   const closeModal = () => {
     setModalOpen(false);
   };
+
   return (
     <>
       <nav className="border-b border-gray-200 py-3 px-6 md:px-10 flex items-center justify-between">
@@ -37,13 +38,13 @@ function Navigation() {
         <div className="hidden md:flex items-center gap-6">
           <button
             onClick={() => openModal("register")}
-            className="text-[#E68A7B] font-semibold text-lg hover:text-[#8AB8B3] transition-colors"
+            className="text-[#EE6832] font-semibold text-lg hover:text-[#8AB8B3] transition-colors"
           >
             Registrarse
           </button>
           <button
             onClick={() => openModal("login")}
-            className="text-[#E68A7B] font-semibold text-lg hover:text-[#8AB8B3] transition-colors"
+            className="text-[#EE6832] font-semibold text-lg hover:text-[#8AB8B3] transition-colors"
           >
             Iniciar Sesión
           </button>
@@ -82,13 +83,13 @@ function Navigation() {
           <div className="absolute top-16 left-0 w-full bg-white border-t border-gray-200 px-6 py-4 flex flex-col gap-4 md:hidden z-50">
             <button
               onClick={() => openModal("register")}
-              className="text-[#E68A7B] font-semibold text-lg hover:text-[#8AB8B3] transition-colors"
+              className="text-[#E68A7B] font-semibold text-lg hover:text-[#EE6832] transition-colors"
             >
               Registrarse
             </button>
             <button
               onClick={() => openModal("login")}
-              className="text-[#E68A7B] font-semibold text-lg hover:text-[#8AB8B3] transition-colors"
+              className="text-[#E68A7B] font-semibold text-lg hover:text-[#EE6832] transition-colors"
             >
               Iniciar Sesión
             </button>
@@ -106,26 +107,47 @@ function Navigation() {
             >
               &times;
             </button>
-            <h2 className="text-2xl font-semibold mb-4 text-[#8AB8B3]">
+            <h2 className="text-2xl font-semibold mb-4 text-[#8AB8B3] text-center">
               {formType === "register" ? "Registro" : "Iniciar Sesión"}
             </h2>
             <form className="flex flex-col gap-4">
-              <input
-                type="email"
-                placeholder="Correo electrónico"
-                className="border border-gray-300 rounded px-4 py-2 focus:outline-none"
-              />
-              <input
-                type="password"
-                placeholder="Contraseña"
-                className="border border-gray-300 rounded px-4 py-2 focus:outline-none"
-              />
-              {formType === "register" && (
+              <div>
+                <label htmlFor="email" className="block mb-1 text-gray-700">
+                  Correo Electrónico
+                </label>
                 <input
-                  type="text"
-                  placeholder="Nombre completo"
-                  className="border border-gray-300 rounded px-4 py-2 focus:outline-none"
+                  id="email"
+                  type="email"
+                  placeholder="Ingresa tu correo electrónico"
+                  className="border border-gray-300 rounded px-4 py-2 w-full focus:outline-none"
                 />
+              </div>
+              <div>
+                <label htmlFor="password" className="block mb-1 text-gray-700">
+                  Contraseña
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  placeholder="Ingresa una contraseña"
+                  className="border border-gray-300 rounded px-4 py-2 w-full focus:outline-none"
+                />
+              </div>
+              {formType === "register" && (
+                <div>
+                  <label
+                    htmlFor="fullname"
+                    className="block mb-1 text-gray-700"
+                  >
+                    Nombre completo
+                  </label>
+                  <input
+                    id="fullname"
+                    type="text"
+                    placeholder="Nombre completo"
+                    className="border border-gray-300 rounded px-4 py-2 w-full focus:outline-none"
+                  />
+                </div>
               )}
               <button
                 type="submit"
