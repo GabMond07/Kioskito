@@ -1,6 +1,6 @@
 import Navigation from '../Components/Navigation'
 
-function registerView() {
+function RegisterView() {
 
     return (
       <>
@@ -8,4 +8,4 @@ function registerView() {
     )
   }
   
-  export default registerView
+  export default RegisterView

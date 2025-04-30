@@ -1,4 +1,4 @@
-function loginView() {
+function LoginView() {
 
     return (
       <>
@@ -9,5 +9,5 @@ function loginView() {
     )
   }
   
-  export default loginView
+  export default LoginView
   

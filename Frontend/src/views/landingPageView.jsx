@@ -1,13 +1,13 @@
-function landingPageView() {
+function LandingPageView() {
 
     return (
       <>
-        <div>
+        <div className="flex-grow">
           <h1>Hola Mundo</h1>
         </div>
       </>
     )
   }
   
-  export default landingPageView
+  export default LandingPageView
   
