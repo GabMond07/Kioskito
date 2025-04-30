@@ -1,14 +1,31 @@
-import './App.css'
+import "./App.css";
+import '@fontsource-variable/inter';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Home, Login, Register } from "./Pages/";
+import Layout from "./Layout";
+
+const router = createBrowserRouter([
+  {
+    element: <Layout />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/Login",
+        element: <Login />,
+      },
+      {
+        path: "/Register",
+        element: <Register />,
+      },
+    ],
+  },
+]);
 
 function App() {
-
-  return (
-    <>
-      <div className="text-2xl">
-        <h1 className="text-5xl"> Hello World </h1>
-      </div>
-    </>
-  )
+  return <RouterProvider router={router} />;
 }
 
-export default App
+export default App;
