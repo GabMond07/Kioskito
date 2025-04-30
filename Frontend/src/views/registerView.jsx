@@ -1,10 +1,9 @@
+import Navigation from '../Components/Navigation'
+
 function registerView() {
 
     return (
       <>
-        <div>
-          <h1>Hola Mundo</h1>
-        </div>
       </>
     )
   }
