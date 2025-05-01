@@ -1,19 +1,17 @@
-# Kioskito/API/App.py
-
 from flask import Flask, request, jsonify
 from flask_jwt_extended import (
     JWTManager, create_access_token, create_refresh_token,
     jwt_required, get_jwt_identity, get_jwt
 )
 from flask_cors import CORS
-from prisma import Prisma
 from werkzeug.security import generate_password_hash, check_password_hash
+from prisma import Prisma
 from datetime import datetime, timedelta
-import os
 import asyncio
+import os
 import uvicorn
 
-# --- Prisma global ---
+# Prisma global
 prisma = Prisma()
 
 def get_prisma_client():
@@ -22,11 +20,10 @@ def get_prisma_client():
         raise RuntimeError("Prisma client is not initialized.")
     return prisma
 
-# --- Crear app ---
 def create_app():
     app = Flask(__name__)
-    app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "super-secret-dev")
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+    app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "super-secret-default-key")
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=7)
 
     jwt = JWTManager(app)
@@ -38,115 +35,91 @@ def create_app():
     def check_if_token_in_blocklist(jwt_header, jwt_payload):
         return jwt_payload["jti"] in BLOCKLIST
 
-    # --- REGISTER ---
     @app.route("/register", methods=["POST"])
-    def register():
-        db = get_prisma_client()
+    async def register():
         data = request.get_json()
-
-        email = data.get("email")
+        username = data.get("username")
         password = data.get("password")
 
-        if not email or not password:
-            return jsonify({"error": "Email y contraseña son requeridos"}), 400
+        if not username or not password:
+            return jsonify({"msg": "Faltan campos"}), 400
 
-        try:
-            user = asyncio.run(db.user.find_unique(where={"email": email}))
-            if user:
-                return jsonify({"error": "El usuario ya existe"}), 409
+        db = get_prisma_client()
 
-            hashed_password = generate_password_hash(password)
+        existing = await db.user.find_unique(where={"username": username})
+        if existing:
+            return jsonify({"msg": "Usuario ya existe"}), 400
 
-            new_user = asyncio.run(db.user.create({
-                "data": {
-                    "email": email,
-                    "password": hashed_password,
-                    "created_at": datetime.utcnow().isoformat()
-                }
-            }))
+        hashed = generate_password_hash(password)
+        user = await db.user.create(
+            data={
+                "username": username,
+                "passwordHash": hashed
+            }
+        )
+        return jsonify({"msg": "Usuario creado con éxito", "user_id": user.id}), 201
 
-            access_token = create_access_token(identity=new_user.id)
-            refresh_token = create_refresh_token(identity=new_user.id)
-
-            return jsonify({
-                "msg": "Usuario registrado",
-                "access_token": access_token,
-                "refresh_token": refresh_token,
-                "user": {
-                    "id": new_user.id,
-                    "email": new_user.email
-                }
-            }), 201
-        except Exception as e:
-            print("Error:", e)
-            return jsonify({"error": "Error interno"}), 500
-
-    # --- LOGIN ---
     @app.route("/login", methods=["POST"])
-    def login():
-        db = get_prisma_client()
+    async def login():
         data = request.get_json()
-        email = data.get("email")
+        username = data.get("username")
         password = data.get("password")
 
-        if not email or not password:
-            return jsonify({"error": "Faltan datos"}), 400
+        db = get_prisma_client()
+        user = await db.user.find_unique(where={"username": username})
 
-        try:
-            user = asyncio.run(db.user.find_unique(where={"email": email}))
-            if not user or not check_password_hash(user.password, password):
-                return jsonify({"error": "Credenciales inválidas"}), 401
+        if not user or not check_password_hash(user.passwordHash, password):
+            return jsonify({"msg": "Credenciales inválidas"}), 401
 
-            access_token = create_access_token(identity=user.id)
-            refresh_token = create_refresh_token(identity=user.id)
+        user_id_str = str(user.id)
+        access_token = create_access_token(identity=user_id_str)
+        refresh_token = create_refresh_token(identity=user_id_str)
 
-            return jsonify({
-                "msg": "Inicio de sesión exitoso",
-                "access_token": access_token,
-                "refresh_token": refresh_token,
-                "user": {
-                    "id": user.id,
-                    "email": user.email
-                }
-            }), 200
-        except Exception as e:
-            print("Error:", e)
-            return jsonify({"error": "Error interno"}), 500
+        await db.refreshtoken.create(data={
+            "token": refresh_token,
+            "expiresAt": datetime.utcnow() + timedelta(days=7),
+            "userId": user.id,
+            "ipAddress": request.remote_addr,
+            "deviceInfo": request.headers.get("User-Agent", "")
+        })
 
-    # --- REFRESH TOKEN ---
+        return jsonify({
+            "access_token": access_token,
+            "refresh_token": refresh_token
+        }), 200
+
     @app.route("/refresh", methods=["POST"])
     @jwt_required(refresh=True)
-    def refresh_token():
-        identity = get_jwt_identity()
-        access_token = create_access_token(identity=identity)
-        return jsonify({"access_token": access_token}), 200
+    async def refresh():
+        current_user_id = get_jwt_identity()
+        access_token = create_access_token(identity=current_user_id)
+        return jsonify(access_token=access_token), 200
 
-    # --- LOGOUT ---
     @app.route("/logout", methods=["POST"])
-    @jwt_required()
-    def logout():
+    @jwt_required(refresh=True)
+    async def logout():
         jti = get_jwt()["jti"]
         BLOCKLIST.add(jti)
         return jsonify({"msg": "Sesión cerrada correctamente"}), 200
 
     return app
 
-# --- Instancia de la app ---
+
 app = create_app()
 
-# --- Ejecutar con Prisma conectado ---
 if __name__ == "__main__":
     if "JWT_SECRET_KEY" not in os.environ:
-        print("⚠️  ADVERTENCIA: usando clave secreta por defecto.")
+        print("ADVERTENCIA: JWT_SECRET_KEY no está configurada. Usando valor por defecto.")
 
     try:
         asyncio.run(prisma.connect())
-        print("✅ Prisma conectado correctamente.")
+        print("✅ Prisma conectado")
     except Exception as e:
-        print(f"❌ Error al conectar Prisma: {e}")
+        print(f"❌ Error al conectar con Prisma: {e}")
+        exit(1)
 
     app.run(host="0.0.0.0", port=5000, debug=True)
 
     if prisma.is_connected():
         asyncio.run(prisma.disconnect())
-        print("🔌 Prisma desconectado.")
+        print("🔌 Prisma desconectado")
