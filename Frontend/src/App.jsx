@@ -1,14 +1,32 @@
-import './App.css'
+import "./App.css";
+import '@fontsource-variable/inter';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Home, Dashboard } from "./Pages/";
+import Layout from "./Layout";
+import PrivateRoute from "./Components/Routes/PrivateRoute";
+
+const router = createBrowserRouter([
+  {
+    element: <Layout />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/dashboard",
+        element: (
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        ),
+      },
+    ],
+  },
+]);
 
 function App() {
-
-  return (
-    <>
-      <div className="text-2xl">
-        <h1 className="text-5xl"> Hello World </h1>
-      </div>
-    </>
-  )
+  return <RouterProvider router={router} />;
 }
 
-export default App
+export default App;

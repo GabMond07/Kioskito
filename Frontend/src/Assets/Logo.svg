@@ -1,0 +1,24 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <!-- Círculo base -->
+    <circle cx="100" cy="100" r="90" fill="#F5E7C9" stroke="#E0D6B2" stroke-width="5"/>
+  
+    <!-- Icono del quiosco y libro -->
+    <g transform="translate(30, 40)">
+      <!-- Techo del quiosco -->
+      <path d="M10 10 H90 L50 0 Z" fill="#E68A7B" stroke="#D67A6B" stroke-width="2"/>
+      <path d="M10 10 H90 L50 0 Z" fill="none" stroke="#F5E7C9" stroke-width="2" stroke-dasharray="5,5"/>
+      <!-- Columnas del quiosco -->
+      <rect x="15" y="10" width="10" height="40" fill="#8AB8B3"/>
+      <rect x="75" y="10" width="10" height="40" fill="#8AB8B3"/>
+      <!-- Base del quiosco -->
+      <rect x="15" y="50" width="70" height="10" fill="#D4A76A"/>
+      <!-- Libro -->
+      <rect x="25" y="20" width="50" height="30" fill="#F5E7C9" stroke="#E68A7B" stroke-width="2"/>
+      <path d="M50 20 V50 M30 20 V50 M70 20 V50" stroke="#E68A7B" stroke-width="1"/>
+    </g>
+  
+    <!-- Texto "Kios Kito Digital" -->
+    <text x="110" y="90" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#8AB8B3">Kios</text>
+    <text x="110" y="120" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#E68A7B">Kito</text>
+    <text x="110" y="150" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#8AB8B3">Digital</text>
+  </svg>
