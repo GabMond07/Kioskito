@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 import asyncio
 import os
 import uvicorn
+from asgiref.wsgi import WsgiToAsgi
 
 # Prisma global
 prisma = Prisma()
@@ -106,11 +107,13 @@ def create_app():
 
 
 app = create_app()
+asgi_app = WsgiToAsgi(app)
 
 if __name__ == "__main__":
     if "JWT_SECRET_KEY" not in os.environ:
         print("ADVERTENCIA: JWT_SECRET_KEY no está configurada. Usando valor por defecto.")
 
+    # Conectar Prisma usando asyncio.run en el contexto del script
     try:
         asyncio.run(prisma.connect())
         print("✅ Prisma conectado")
@@ -118,8 +121,12 @@ if __name__ == "__main__":
         print(f"❌ Error al conectar con Prisma: {e}")
         exit(1)
 
-    app.run(host="0.0.0.0", port=5000, debug=True)
-
+    # Ejecutar la aplicación usando uvicorn.run
+    # uvicorn.run se encarga de ejecutar la app Flask (WSGI) con soporte para async routes
+    print("🚀 Iniciando servidor Uvicorn...")
+    uvicorn.run(asgi_app, host="0.0.0.0", port=5000, log_level="debug")
+    
+    # Desconectar Prisma usando asyncio.run
     if prisma.is_connected():
         asyncio.run(prisma.disconnect())
         print("🔌 Prisma desconectado")
