@@ -1,12 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-py"
-  // output   = "../generated/prisma"
+  interface = "asyncio"
 }
 
 datasource db {
@@ -14,32 +8,101 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id            Int             @id @default(autoincrement())
-  username      String          @unique
-  passwordHash  String
-  createdAt     DateTime        @default(now())
-  refreshTokens RefreshToken[]
-
-  @@map("users")
+model Books {
+  id              Int           @id @default(autoincrement()) @db.UnsignedInt
+  title           String        @db.VarChar(255)
+  author          String        @db.VarChar(255)
+  date            DateTime      @db.Date
+  cover_image_url String        @db.VarChar(255)
+  file_url        String        @db.VarChar(255)
+  UserLibrary     UserLibrary[]
 }
 
-model RefreshToken {
+model Payment {
+  id             Int      @id @default(autoincrement()) @db.UnsignedInt
+  date           DateTime @db.Date
+  id_user        Int      @db.UnsignedInt
+  amount         Float    @db.Float
+  payment_method String   @db.VarChar(255)
+  status         String   @db.VarChar(100)
+  Users          Users    @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Payment_ibfk_1")
+
+  @@index([id_user], map: "id_user")
+}
+
+model Plans {
+  id           Int            @id @default(autoincrement()) @db.UnsignedInt
+  type         String         @db.VarChar(255)
+  price        Float          @db.Float
+  Suscriptions Suscriptions[]
+}
+
+model Roles {
+  id    Int     @id @default(autoincrement()) @db.UnsignedInt
+  rol   String  @db.VarChar(255)
+  Users Users[]
+}
+
+model Suscriptions {
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  id_user    Int      @db.UnsignedInt
+  status     String   @db.VarChar(100)
+  start_date DateTime @db.Date
+  end_date   DateTime @db.Date
+  id_plan    Int      @db.UnsignedInt
+  Users      Users    @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Suscriptions_ibfk_1")
+  Plans      Plans    @relation(fields: [id_plan], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Suscriptions_ibfk_2")
+
+  @@index([id_plan], map: "id_plan")
+  @@index([id_user], map: "id_user")
+}
+
+model UserLibrary {
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  id_user    Int      @db.UnsignedInt
+  id_libro   Int      @db.UnsignedInt
+  date_added DateTime @db.Date
+  Users      Users    @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "UserLibrary_ibfk_1")
+  Books      Books    @relation(fields: [id_libro], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "UserLibrary_ibfk_2")
+
+  @@index([id_libro], map: "id_libro")
+  @@index([id_user], map: "id_user")
+}
+
+model Users {
+  id           Int            @id @default(autoincrement()) @db.UnsignedInt
+  name         String         @db.VarChar(255)
+  email        String         @unique @db.VarChar(255)
+  password     String         @db.VarChar(255)
+  id_rol       Int            @db.UnsignedInt
+  create_at    DateTime       @db.Timestamp(0)
+  Payment      Payment[]
+  Suscriptions Suscriptions[]
+  UserLibrary  UserLibrary[]
+  Roles        Roles          @relation(fields: [id_rol], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_ibfk_1")
+  AuthToken    AuthToken[] 
+
+  @@index([id_rol], map: "id_rol")
+}
+
+model AuthToken {
   id                 BigInt          @id @default(autoincrement())
-  token              String          @unique
+  token              String          @unique(map: "token_unique", length: 767) @db.Text
   expiresAt          DateTime
   createdAt          DateTime        @default(now())
   revokedAt          DateTime?
   replacedByTokenId  BigInt?
   deviceInfo         String?
   ipAddress          String?
+  
 
-  user               User            @relation(fields: [userId], references: [id])
-  userId             Int
-  replacedByToken    RefreshToken?   @relation("RefreshTokenReplacement", fields: [replacedByTokenId], references: [id])
-  replacesToken      RefreshToken[]  @relation("RefreshTokenReplacement")
+  user               Users           @relation(fields: [userId], references: [id])
+  userId             Int @db.UnsignedInt
+
+  replacedByToken    AuthToken?      @relation("AuthTokenReplacement", fields: [replacedByTokenId], references: [id])
+  replacesToken      AuthToken[]     @relation("AuthTokenReplacement")
 
   @@index([userId])
-  @@index([token])
-  @@map("refresh_tokens")
+  @@index([token(length: 767)], map: "token_idx") 
+  @@map("auth_tokens")
 }
