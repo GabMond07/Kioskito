@@ -1,7 +1,7 @@
 import Logo from "../Assets/Logo.avif";
 import { useState, useContext } from "react";
 import { AuthContext } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,12 +32,12 @@ function Navigation() {
         // Handle registration
         await register(fullname, email, password);
         closeModal();
-        navigate('/dashboard');
+        navigate('/');
       } else {
         // Handle login
         await login(email, password);
         closeModal();
-        navigate('/dashboard');
+        navigate('/');
       }
     } catch (err) {
       setError(err.message || 'Error al procesar la solicitud');
@@ -84,30 +84,30 @@ function Navigation() {
       <div className="hidden md:flex items-center gap-6">
         {user ? (
           <>
-            <a
-              href="/"
+            <Link
+              to="/"
               className="text-[#EE6832] font-semibold text-lg hover:text-[#8AB8B3] transition-colors"
             >
               Inicio
-            </a>
-            <a
-              href="/dashboard"
+            </Link>
+            <Link
+              to="/books"
               className="text-[#EE6832] font-semibold text-lg hover:text-[#8AB8B3] transition-colors"
             >
               Libros
-            </a>
-            <a
-              href="/my-list"
+            </Link>
+            <Link
+              to="/my-list"
               className="text-[#EE6832] font-semibold text-lg hover:text-[#8AB8B3] transition-colors"
             >
               Mi Lista
-            </a>
-            <a
-              href="/popular"
+            </Link>
+            <Link
+              to="/popular"
               className="text-[#EE6832] font-semibold text-lg hover:text-[#8AB8B3] transition-colors"
             >
               Novedades Populares
-            </a>
+            </Link>
             <div className="relative">
               <input
                 type="text"

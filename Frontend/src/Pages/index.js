@@ -1,3 +1,3 @@
 // Pages/index.js
 export { default as Home } from './Home';
-export { default as Dashboard } from './Dashboard';
+export { default as Books } from './Books';
