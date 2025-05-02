@@ -1,10 +1,10 @@
-import imagen from "../Assets/background-books.jpg";
-import Libro from "../Components/Libro.jsx";
-import Libro1 from "../Assets/Bridgerton.jpeg";
-import Libro2 from "../Assets/El-Principito.jpeg";
-import Libro3 from "../Assets/Alas-de-sangre.jpeg";
-import Libro4 from "../Assets/A-Game-of-Thrones.jpeg";
-import Libro5 from "../Assets/Metamorfosis.jpeg";
+import imagen from "../assets/background-books.jpg";
+import Libro from "../components/Libro.jsx";
+import Libro1 from "../assets/Bridgerton.jpeg";
+import Libro2 from "../assets/El-Principito.jpeg";
+import Libro3 from "../assets/Alas-de-sangre.jpeg";
+import Libro4 from "../assets/A-Game-of-Thrones.jpeg";
+import Libro5 from "../assets/Metamorfosis.jpeg";
 
 function LandingPageView() {
   return (

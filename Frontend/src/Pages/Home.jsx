@@ -1,4 +1,4 @@
-import LandingPageView from "../Views/LandingPageView";
+import LandingPageView from "../views/LandingPageView";
 
 function Home() {
   return (
