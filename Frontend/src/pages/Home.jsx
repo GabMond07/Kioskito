@@ -1,4 +1,4 @@
-import HomeView from "../views/LandingPageView";
+import HomeView from "../views/HomeView";
 
 function Home() {
   return (

@@ -85,7 +85,7 @@ function Navigation() {
         {user ? (
           <>
             <Link
-              to="/"
+              to="/home"
               className="text-[#EE6832] font-semibold text-lg hover:text-[#8AB8B3] transition-colors"
             >
               Inicio
