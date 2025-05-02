@@ -1,7 +1,7 @@
 import "./App.css";
 import '@fontsource-variable/inter';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Home, Dashboard } from "./pages/";
+import Home from "./Pages/Home";
 import Layout from "./Layout";
 import PrivateRoute from "./components/routes/PrivateRoute";
 
@@ -17,7 +17,7 @@ const router = createBrowserRouter([
         path: "/dashboard",
         element: (
           <PrivateRoute>
-            <Dashboard />
+            <h1>Dashboard</h1>
           </PrivateRoute>
         ),
       },
