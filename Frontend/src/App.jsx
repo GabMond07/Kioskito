@@ -1,8 +1,8 @@
 import "./App.css";
-import '@fontsource-variable/inter';
-import '@fontsource/poppins/500.css';
+import "@fontsource-variable/inter";
+import "@fontsource/poppins/500.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Home, Books } from "./pages/";
+import { Home, Books, Landing, Popular, MyList } from "./pages/";
 import Layout from "./Layout";
 import PrivateRoute from "./components/routes/PrivateRoute";
 
@@ -11,8 +11,12 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: "/",
-        element: <Home />,
+        path: "/home",
+        element: (
+          <PrivateRoute>
+            <Home />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/books",
@@ -21,6 +25,26 @@ const router = createBrowserRouter([
             <Books />
           </PrivateRoute>
         ),
+      },
+      {
+        path: "/popular",
+        element: (
+          <PrivateRoute>
+            <Popular />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/mylist",
+        element: (
+          <PrivateRoute>
+            <MyList />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/",
+        element: <Landing />,
       },
     ],
   },

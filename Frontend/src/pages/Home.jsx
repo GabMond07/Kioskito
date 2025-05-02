@@ -1,9 +1,9 @@
-import LandingPageView from "../views/LandingPageView";
+import HomeView from "../views/LandingPageView";
 
 function Home() {
   return (
     <>
-      <LandingPageView />
+      <HomeView />
     </>
   );
 }

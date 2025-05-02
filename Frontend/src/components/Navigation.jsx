@@ -32,12 +32,12 @@ function Navigation() {
         // Handle registration
         await register(fullname, email, password);
         closeModal();
-        navigate('/');
+        navigate('/home');
       } else {
         // Handle login
         await login(email, password);
         closeModal();
-        navigate('/');
+        navigate('/home');
       }
     } catch (err) {
       setError(err.message || 'Error al procesar la solicitud');
