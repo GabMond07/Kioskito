@@ -97,7 +97,7 @@ function Navigation() {
               Libros
             </Link>
             <Link
-              to="/my-list"
+              to="/mylist"
               className="text-[#EE6832] font-semibold text-lg hover:text-[#8AB8B3] transition-colors"
             >
               Mi Lista
