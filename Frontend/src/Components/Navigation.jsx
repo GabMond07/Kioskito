@@ -1,6 +1,6 @@
 import Logo from "../Assets/Logo.avif";
 import { useState, useContext } from "react";
-import { AuthContext } from '../Context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 function Navigation() {
