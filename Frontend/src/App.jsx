@@ -1,7 +1,8 @@
 import "./App.css";
 import '@fontsource-variable/inter';
+import '@fontsource/poppins/500.css';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Home, Dashboard } from "./pages/";
+import { Home, Books } from "./pages/";
 import Layout from "./Layout";
 import PrivateRoute from "./components/routes/PrivateRoute";
 
@@ -14,10 +15,10 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/dashboard",
+        path: "/books",
         element: (
           <PrivateRoute>
-            <Dashboard />
+            <Books />
           </PrivateRoute>
         ),
       },
