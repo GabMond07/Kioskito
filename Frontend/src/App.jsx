@@ -2,7 +2,7 @@ import "./App.css";
 import "@fontsource-variable/inter";
 import "@fontsource/poppins/500.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Home, Books, Landing, Popular, MyList } from "./pages/";
+import { Home, Books, Landing, Popular, MyList, Subscription } from "./pages/";
 import Layout from "./Layout";
 import PrivateRoute from "./components/routes/PrivateRoute";
 
@@ -39,6 +39,15 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <MyList />
+          </PrivateRoute>
+        ),
+      },
+      
+      {
+        path: "/subscription",
+        element: (
+          <PrivateRoute>
+            <Subscription />
           </PrivateRoute>
         ),
       },

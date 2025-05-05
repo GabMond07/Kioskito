@@ -4,3 +4,4 @@ export { default as Books } from './Books';
 export { default as Landing } from './Landing';
 export { default as Popular } from './Popular';
 export { default as MyList } from './MyList';
+export { default as Subscription } from './Subscription';
