@@ -2,8 +2,9 @@ import "./App.css";
 import "@fontsource-variable/inter";
 import "@fontsource/poppins/500.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Home, Books, Landing, Popular, MyList, Subscription } from "./pages/";
+import { Home, Books, Landing, Popular, MyList, Subscription, AdminDashboard } from "./pages/";
 import Layout from "./Layout";
+import AdminLayout from "./AdminLayout";
 import PrivateRoute from "./components/routes/PrivateRoute";
 
 const router = createBrowserRouter([
@@ -13,7 +14,7 @@ const router = createBrowserRouter([
       {
         path: "/home",
         element: (
-          <PrivateRoute>
+          <PrivateRoute roleRequired={1}>
             <Home />
           </PrivateRoute>
         ),
@@ -21,7 +22,7 @@ const router = createBrowserRouter([
       {
         path: "/books",
         element: (
-          <PrivateRoute>
+          <PrivateRoute roleRequired={1}>
             <Books />
           </PrivateRoute>
         ),
@@ -29,7 +30,7 @@ const router = createBrowserRouter([
       {
         path: "/popular",
         element: (
-          <PrivateRoute>
+          <PrivateRoute roleRequired={1}>
             <Popular />
           </PrivateRoute>
         ),
@@ -37,7 +38,7 @@ const router = createBrowserRouter([
       {
         path: "/mylist",
         element: (
-          <PrivateRoute>
+          <PrivateRoute roleRequired={1}>
             <MyList />
           </PrivateRoute>
         ),
@@ -46,7 +47,7 @@ const router = createBrowserRouter([
       {
         path: "/subscription",
         element: (
-          <PrivateRoute>
+          <PrivateRoute roleRequired={1}>
             <Subscription />
           </PrivateRoute>
         ),
@@ -57,6 +58,19 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    element: <AdminLayout />,
+    children: [
+      {
+        path: "/admin",
+        element: (
+          <PrivateRoute roleRequired={2}>
+            <AdminDashboard />
+          </PrivateRoute>
+        ),
+      },
+    ],
+  }
 ]);
 
 function App() {
