@@ -2,6 +2,7 @@ import Logo from "../Assets/Logo.avif";
 import { useState, useContext } from "react";
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,7 +41,16 @@ function Navigation() {
         navigate('/home');
       }
     } catch (err) {
-      setError(err.message || 'Error al procesar la solicitud');
+      let errorMsg = 'Error al iniciar sesión';
+
+      if (err.message.includes('401')) {
+        errorMsg = 'Correo o contraseña incorrectos.';
+      } else if (err.message.includes('400')) {
+        errorMsg = 'Faltan datos requeridos.';
+      } else {
+        errorMsg = 'Error inesperado. Inténtalo de nuevo.';
+      }
+      toast.error(errorMsg);
     } finally {
       setIsLoading(false);
     }
@@ -360,7 +370,6 @@ function Navigation() {
                   />
                 </div>
               )}
-              {error && <p className="text-red-500 text-sm">{error}</p>}
               <button
                 type="submit"
                 className="bg-[#E68A7B] text-white font-semibold py-2 rounded hover:bg-[#d77565] transition disabled:opacity-50"
