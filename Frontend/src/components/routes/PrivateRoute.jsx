@@ -10,7 +10,7 @@ export default function PrivateRoute({ children, roleRequired }) {
   }
 
   if (!user || !accessToken) {
-    return <Navigate to={roleRequired === 2 ? '/admin' : '/'} replace />;
+    return <Navigate to={roleRequired === 2 ? '/' : '/admin'} replace />;
   }
 
   if (user.id_rol !== roleRequired) {
