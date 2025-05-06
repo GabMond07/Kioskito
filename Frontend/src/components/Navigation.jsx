@@ -3,6 +3,7 @@ import { useState, useContext } from "react";
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import Loader from './ui/Loader';
 
 function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -375,11 +376,15 @@ function Navigation() {
                 className="bg-[#E68A7B] text-white font-semibold py-2 rounded hover:bg-[#d77565] transition disabled:opacity-50"
                 disabled={isLoading}
               >
-                {isLoading
-                  ? 'Procesando...'
-                  : formType === 'register'
-                  ? 'Registrarse'
-                  : 'Entrar'}
+                {isLoading ? (
+                  <div className="flex justify-center items-center h-full relative">
+                    <Loader className="w-6 h-6"/>
+                  </div>
+                ) : formType === 'register' ? (
+                  'Registrarse'
+                ) : (
+                  'Entrar'
+                )}
               </button>
             </form>
           </div>

@@ -1,12 +1,13 @@
 import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
+import Loader from "../ui/LoaderPage";
 
 export default function PrivateRoute({ children, roleRequired }) {
   const { accessToken, user , isLoading } = useContext(AuthContext);
 
   if (isLoading) {
-    return <div>Cargando...</div>;
+    return <div className="flex justify-center items-center min-h-screen"><Loader className="w-16 h-16"/></div>;
   }
 
   if (!user || !accessToken) {
