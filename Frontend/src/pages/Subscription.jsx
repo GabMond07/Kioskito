@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { AuthContext } from '../context/AuthContext'; // Asegúrate de ajustar la ruta según tu estructura
+import SuscriptionsView from '../views/suscriptionsView'
 
 const API_URL = 'https://localhost:7024'
 
@@ -74,6 +75,8 @@ const SubscriptionForm = () => {
   };
 
   return (
+    <>
+    <SuscriptionsView />
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-6 text-center">Suscribirse a un Plan</h2>
       
@@ -138,6 +141,7 @@ const SubscriptionForm = () => {
         </form>
       )}
     </div>
+    </>
   );
 };
 

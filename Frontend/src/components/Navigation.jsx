@@ -119,6 +119,12 @@ function Navigation() {
             >
               Novedades Populares
             </Link>
+            <Link
+              to="/subscription"
+              className="text-[#EE6832] font-semibold text-lg hover:text-[#8AB8B3] transition-colors"
+            >
+              Subscripciones
+            </Link>
             <div className="relative">
               <input
                 type="text"
