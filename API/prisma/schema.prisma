@@ -31,10 +31,12 @@ model Payment {
 }
 
 model Plans {
-  id           Int            @id @default(autoincrement()) @db.UnsignedInt
-  type         String         @db.VarChar(255)
-  price        Float          @db.Float
-  Suscriptions Suscriptions[]
+  id              Int             @id @default(autoincrement()) @db.UnsignedInt
+  idPriceStripe   String          @map("id_price") @db.VarChar(255)
+  price           Float           @db.Float
+  Suscriptions    Suscriptions[]
+  
+  @@map("Plans")
 }
 
 model Roles {
@@ -44,17 +46,23 @@ model Roles {
 }
 
 model Suscriptions {
-  id         Int      @id @default(autoincrement()) @db.UnsignedInt
-  id_user    Int      @db.UnsignedInt
-  status     String   @db.VarChar(100)
-  start_date DateTime @db.Date
-  end_date   DateTime @db.Date
-  id_plan    Int      @db.UnsignedInt
-  Users      Users    @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Suscriptions_ibfk_1")
-  Plans      Plans    @relation(fields: [id_plan], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Suscriptions_ibfk_2")
+  id                   Int       @id @default(autoincrement()) @db.UnsignedInt
+  id_user              Int       @db.UnsignedInt
+  status               String    @db.VarChar(100)
+  start_date           DateTime  @db.Date
+  end_date             DateTime  @db.Date
+  id_plan              Int       @db.UnsignedInt
+  stripeSubscriptionId String    @map("stripe_subscription_id") @db.VarChar(255)
+  stripeInvoiceId      String    @map("stripe_invoice_id") @db.VarChar(255)
+  cancelAtPeriodEnd    Boolean   @map("cancel_at_period_end")
+  canceledAt           DateTime? @map("canceled_at")
 
-  @@index([id_plan], map: "id_plan")
+  Users Users @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Suscriptions_ibfk_1")
+  Plans Plans @relation(fields: [id_plan], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Suscriptions_ibfk_2")
+
   @@index([id_user], map: "id_user")
+  @@index([id_plan], map: "id_plan")
+  @@map("Suscriptions")
 }
 
 model UserLibrary {
@@ -70,17 +78,18 @@ model UserLibrary {
 }
 
 model Users {
-  id           Int            @id @default(autoincrement()) @db.UnsignedInt
-  name         String         @db.VarChar(255)
-  email        String         @unique @db.VarChar(255)
-  password     String         @db.VarChar(255)
-  id_rol       Int            @db.UnsignedInt
-  create_at    DateTime       @db.Timestamp(0)
-  Payment      Payment[]
-  Suscriptions Suscriptions[]
-  UserLibrary  UserLibrary[]
-  Roles        Roles          @relation(fields: [id_rol], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_ibfk_1")
-  AuthToken    AuthToken[] 
+  id                 Int            @id @default(autoincrement()) @db.UnsignedInt
+  name               String         @db.VarChar(255)
+  email              String         @unique @db.VarChar(255)
+  password           String         @db.VarChar(255)
+  id_rol             Int            @db.UnsignedInt
+  create_at          DateTime       @db.Timestamp(0)
+  stripeCustomerId   String?        @map("stripe_customer_id") @db.VarChar(255)
+  Payment            Payment[]
+  Suscriptions       Suscriptions[]
+  UserLibrary        UserLibrary[]
+  Roles              Roles          @relation(fields: [id_rol], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_ibfk_1")
+  AuthToken          AuthToken[]
 
   @@index([id_rol], map: "id_rol")
 }
