@@ -2,6 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import Loader from "../../../components/ui/Loader";
+import { useContext } from "react";
+import { AuthContext } from "../../../context/AuthContext";
 
 function AgregarLibro() {
   const [file, setFile] = useState(null);
@@ -9,10 +11,11 @@ function AgregarLibro() {
   const [author, setAuthor] = useState("");
   const [date, setDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
   const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
   const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-
+  //Obtiene el id del rol del usuario logueado
+  const {user} = useContext(AuthContext);
+  
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
@@ -46,6 +49,7 @@ function AgregarLibro() {
         date,
         cover_image_url: imageUrl,
         file_url: "placeholder.pdf", // Este campo se ignora en backend, pero es obligatorio
+        rol_id: user.id_rol
       });
 
       toast.success("Libro guardado con éxito");
