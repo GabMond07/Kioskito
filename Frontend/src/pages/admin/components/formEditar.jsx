@@ -60,6 +60,7 @@ function FormEditar() {
         author: formData.autor,
         date: formData.fecha,
         rol_id: user.id_rol,
+        user_id: user.id
       };
 
       const response = await axios.put(

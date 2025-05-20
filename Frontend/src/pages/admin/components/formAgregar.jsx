@@ -49,7 +49,8 @@ function AgregarLibro() {
         date,
         cover_image_url: imageUrl,
         file_url: "placeholder.pdf", // Este campo se ignora en backend, pero es obligatorio
-        rol_id: user.id_rol
+        rol_id: user.id_rol,
+        user_id: user.id 
       });
 
       toast.success("Libro guardado con éxito");
