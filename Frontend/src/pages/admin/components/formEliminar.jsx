@@ -1,45 +1,99 @@
-function formEliminar() {
+import { useState, useContext, useRef } from "react";
+import BuscadorAsincrono from "./buscador";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import Loader from "../../../components/ui/Loader";
+import { AuthContext } from "../../../context/AuthContext";
+
+function FormEliminar() {
+  const [libroSeleccionado, setLibroSeleccionado] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const { user } = useContext(AuthContext);
+
+  const buscadorRef = useRef(); // 🔑 Referencia
+
+  const handleDelete = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.delete(
+        "http://localhost/Servicio-Php/EliminarLibro",
+        { data: { id: libroSeleccionado.id, rol_id: user.id_rol } }
+      );
+      if (response.data.success) {
+        toast.success("Libro eliminado correctamente.");
+        setLibroSeleccionado(null);
+        buscadorRef.current?.limpiarInput(); // 🔥 Limpiar input aquí
+        setShowModal(false);
+      } else {
+        toast.error("No se pudo eliminar el libro.");
+      }
+    } catch (error) {
+      console.error("Error al eliminar el libro:", error);
+      toast.error("Ocurrió un error al eliminar el libro.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!libroSeleccionado) {
+      toast.error("Selecciona un libro antes de eliminar.");
+      return;
+    }
+    setShowModal(true);
+  };
+
   return (
     <div className="p-6">
-      {/* Barra de búsqueda */}
-      <div className="mb-6">
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Buscar libro..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#EE6832] bg-white"
-          />
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg
-              className="h-5 w-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      {/* Formulario para eliminar libro */}
-      <form className="space-y-4">
-        <div>
-        </div>
+      <form className="space-y-4" onSubmit={handleSubmit}>
+        <BuscadorAsincrono
+          ref={buscadorRef} // 🔑 Pasamos la referencia
+          onSeleccion={(book) => setLibroSeleccionado(book)}
+        />
         <button
           type="submit"
-          className="w-full px-4 py-2 bg-[#EE6832] text-white rounded hover:bg-[#d45a28] transition-colors"
+          className="w-full px-4 py-2 bg-[#EE6832] text-white rounded hover:bg-[#d45a28] transition-colors disabled:opacity-50"
         >
-          Eliminar
+          Eliminar libro
         </button>
       </form>
+
+      {showModal && (
+        <div className="modal modal-open">
+          <div className="modal-box bg-white/80">
+            <h3 className="font-bold text-black/80">Confirmar eliminación</h3>
+            <p className="py-4 text-black/80">
+              ¿Estás seguro de que deseas eliminar “{libroSeleccionado?.title}”?
+              Esta acción no se puede deshacer.
+            </p>
+            <div className="modal-action">
+              <button
+                className="bg-[#8AB8B3]/80 text-black/80 hover:bg-[#7AA8A3] transition-colors px-4 py-2 rounded"
+                onClick={() => setShowModal(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                className="w-full px-4 py-2 bg-[#EE6832] text-white rounded hover:bg-[#d45a28] transition-colors disabled:opacity-50"
+                disabled={isLoading}
+                onClick={handleDelete}
+              >
+                {isLoading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <Loader /> Eliminando...
+                  </div>
+                ) : (
+                  "Sí, eliminar libro"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-export default formEliminar;
+export default FormEliminar;
