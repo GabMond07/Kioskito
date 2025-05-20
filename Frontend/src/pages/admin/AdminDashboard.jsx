@@ -6,7 +6,6 @@ import FormAgregar from "./components/formAgregar";
 
 function AdminDashboard() {
   const [activeModal, setActiveModal] = useState(null);
-
   const renderModal = () => {
     switch (activeModal) {
       case 'agregar':
