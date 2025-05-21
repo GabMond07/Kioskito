@@ -10,7 +10,7 @@ function Navigation() {
   const [isProfileOpen, setIsProfileOpen] = useState(false); // menú perfil
   const [modalOpen, setModalOpen] = useState(false); // modal
   const [formType, setFormType] = useState("register"); // 'register' o 'login'
-  const { login, register, user, logout } = useContext(AuthContext);
+  const { login, register, user, logout, hasActiveSubscription } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullname, setFullname] = useState('');
@@ -33,13 +33,18 @@ function Navigation() {
       if (formType === 'register') {
         // Handle registration
         await register(fullname, email, password);
+        navigate('/subscription');
         closeModal();
-        navigate('/home');
       } else {
         // Handle login
-        await login(email, password);
+        const { hasActiveSubscription } = await login(email, password);
         closeModal();
-        navigate('/home');
+        if (hasActiveSubscription) {
+          toast.success('¡Bienvenido!');
+          navigate('/home');
+        } else {
+          navigate('/subscription');
+        }
       }
     } catch (err) {
       let errorMsg = 'Error al iniciar sesión';
@@ -49,11 +54,11 @@ function Navigation() {
       } else if (err.message.includes('400')) {
         errorMsg = 'Faltan datos requeridos.';
       } else {
-        errorMsg = 'Error inesperado. Inténtalo de nuevo.';
+        errorMsg = 'Por favor, activa una suscripción para continuar.';
       }
       toast.error(errorMsg);
     } finally {
-      setIsLoading(false);
+      setIsLoading(false);    
     }
   };
 
@@ -119,12 +124,14 @@ function Navigation() {
             >
               Novedades Populares
             </Link>
-            <Link
-              to="/subscription"
-              className="text-[#EE6832] font-semibold text-lg hover:text-[#8AB8B3] transition-colors"
-            >
-              Subscripciones
-            </Link>
+            {!hasActiveSubscription && (
+              <Link
+                to="/subscription"
+                className="text-[#EE6832] font-semibold text-lg hover:text-[#8AB8B3] transition-colors"
+              >
+                Subscripciones
+              </Link>
+            )}
             <div className="relative">
               <input
                 type="text"
@@ -170,6 +177,13 @@ function Navigation() {
               </button>
               {isProfileOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                  <Link
+                    to="/subscription"
+                    className="block w-full text-left px-4 py-2 text-[#EE6832] hover:bg-gray-100 hover:text-[#8AB8B3]"
+                    onClick={() => setIsProfileOpen(false)}
+                  >
+                    Ver Suscripción
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="block w-full text-left px-4 py-2 text-[#EE6832] hover:bg-gray-100 hover:text-[#8AB8B3]"
@@ -232,7 +246,7 @@ function Navigation() {
           {user ? (
             <>
               <a
-                href="/"
+                href="/home"
                 className="text-[#E68A7B] font-semibold text-lg hover:text-[#EE6832] transition-colors"
                 onClick={() => setIsOpen(false)}
               >
@@ -246,7 +260,7 @@ function Navigation() {
                 Libros
               </a>
               <a
-                href="/my-list"
+                href="/mylist"
                 className="text-[#E68A7B] font-semibold text-lg hover:text-[#EE6832] transition-colors"
                 onClick={() => setIsOpen(false)}
               >
@@ -259,6 +273,15 @@ function Navigation() {
               >
                 Novedades Populares
               </a>
+              {!hasActiveSubscription && (
+                <a
+                  href="/subscription"
+                  className="text-[#E68A7B] font-semibold text-lg hover:text-[#EE6832] transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Subscripciones
+                </a>
+              )}
               <div className="relative">
                 <input
                   type="text"
@@ -266,6 +289,13 @@ function Navigation() {
                   className="border border-gray-300 rounded px-3 py-1 w-full focus:outline-none focus:border-[#8AB8B3]"
                 />
               </div>
+              <Link
+                to="/subscription"
+                className="text-[#E68A7B] font-semibold text-lg hover:text-[#EE6832] transition-colors flex items-center gap-2"
+                onClick={() => setIsOpen(false)}
+              >
+                Ver Suscripción
+              </Link>
               <button
                 className="text-[#E68A7B] font-semibold text-lg hover:text-[#EE6832] transition-colors flex items-center gap-2"
                 onClick={handleLogout}
@@ -324,7 +354,7 @@ function Navigation() {
               }}
               className="absolute top-2 right-3 text-gray-500 hover:text-red-500 text-2xl font-bold"
             >
-              &times;
+              ×
             </button>
             <h2 className="text-2xl font-semibold mb-4 text-[#8AB8B3] text-center">
               {formType === "register" ? "Registro" : "Iniciar Sesión"}

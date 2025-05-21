@@ -17,7 +17,16 @@ function SuscriptionsView() {
                 <li>Actualizaciones automáticas</li>
               </ul>
               <div className="text-3xl font-bold text-primary text-center mt-6">💲99 / mes</div>
-              <button className="btn btn-primary w-full mt-4">Suscribirse</button>
+              <button className="btn btn-primary w-full mt-4" onClick={()=>document.getElementById('my_modal_3').showModal()}>Suscribirse</button>
+              <dialog id="my_modal_3" className="modal">
+              <div className="modal-box bg-white rounded-xl p-6 shadow-xl hover:scale-105 hover:shadow-2xl transition-transform duration-300 border border-transparent bg-clip-padding">
+                <form method="dialog">
+                  {/* if there is a button in form, it will close the modal */}
+                  <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                </form>
+                
+              </div>
+            </dialog>
             </div>
           </div>
   
