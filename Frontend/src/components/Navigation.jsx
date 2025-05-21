@@ -118,14 +118,6 @@ function Navigation() {
             >
               Novedades Populares
             </Link>
-            {!hasActiveSubscription && (
-              <Link
-                to="/subscription"
-                className="text-[#EE6832] font-semibold text-lg hover:text-[#8AB8B3] transition-colors"
-              >
-                Subscripciones
-              </Link>
-            )}
             <div className="relative">
               <input
                 type="text"
@@ -260,15 +252,6 @@ function Navigation() {
               >
                 Novedades Populares
               </a>
-              {!hasActiveSubscription && (
-                <a
-                  href="/subscription"
-                  className="text-[#E68A7B] font-semibold text-lg hover:text-[#EE6832] transition-colors"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Subscripciones
-                </a>
-              )}
               <div className="relative">
                 <input
                   type="text"
