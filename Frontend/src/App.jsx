@@ -2,7 +2,7 @@ import "./App.css";
 import "@fontsource-variable/inter";
 import "@fontsource/poppins/500.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Home, Landing, Popular, MyList, Subscription, AdminDashboard } from "./pages/";
+import { Home, Landing, Popular, MyList, Subscription, AdminDashboard, Profile } from "./pages/";
 import Layout from "./Layout";
 import AdminLayout from "./AdminLayout";
 import PrivateRoute from "./components/routes/PrivateRoute";
@@ -33,6 +33,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute roleRequired={1}>
             <MyList />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/profile",
+        element: (
+          <PrivateRoute roleRequired={1}>
+            <Profile />
           </PrivateRoute>
         ),
       },
