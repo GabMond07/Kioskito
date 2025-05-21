@@ -18,12 +18,18 @@ function FormEliminar() {
     try {
       const response = await axios.delete(
         "http://localhost/Servicio-Php/EliminarLibro",
-        { data: { id: libroSeleccionado.id, rol_id: user.id_rol } }
+        {
+          data: {
+            id: libroSeleccionado.id,
+            rol_id: user.id_rol,
+            user_id: user.id,
+          },
+        }
       );
       if (response.data.success) {
         toast.success("Libro eliminado correctamente.");
         setLibroSeleccionado(null);
-        buscadorRef.current?.limpiarInput(); // 🔥 Limpiar input aquí
+        buscadorRef.current?.limpiarInput(); //Limpiar input
         setShowModal(false);
       } else {
         toast.error("No se pudo eliminar el libro.");

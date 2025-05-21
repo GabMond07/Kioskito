@@ -97,7 +97,7 @@ function Navigation() {
       </div>
 
       {/* Links escritorio */}
-      <div className="hidden md:flex items-center gap-6">
+      <div className="hidden md:flex items-center gap-10">
         {user ? (
           <>
             <Link
@@ -105,12 +105,6 @@ function Navigation() {
               className="text-[#EE6832] font-semibold text-lg hover:text-[#8AB8B3] transition-colors"
             >
               Inicio
-            </Link>
-            <Link
-              to="/books"
-              className="text-[#EE6832] font-semibold text-lg hover:text-[#8AB8B3] transition-colors"
-            >
-              Libros
             </Link>
             <Link
               to="/mylist"
@@ -251,13 +245,6 @@ function Navigation() {
                 onClick={() => setIsOpen(false)}
               >
                 Inicio
-              </a>
-              <a
-                href="/books"
-                className="text-[#E68A7B] font-semibold text-lg hover:text-[#EE6832] transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Libros
               </a>
               <a
                 href="/mylist"
