@@ -414,7 +414,29 @@ async def get_subscription_status(user_id: int, current_user: dict = Depends(get
         return {"has_active_subscription": bool(subscription)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al verificar estado de suscripción: {str(e)}")
-        
+
+@app.get("/users/{user_id}/subscription/cancellation")
+async def get_subscription_cancellation(user_id: int, current_user: dict = Depends(get_current_user)):
+    try:
+        # Verificar permisos: solo el usuario o un admin puede consultar
+        if current_user.id != user_id and current_user.id_rol != 1:
+            raise HTTPException(status_code=403, detail="No tienes permisos para verificar esta cancelación")
+
+        subscription = await prisma.suscriptions.find_first(
+            where={"id_user": user_id, "status": {"in": ["active", "canceled"]}},
+            order={"end_date": "desc"}
+        )
+
+        if not subscription:
+            raise HTTPException(status_code=404, detail="No se encontró una suscripción activa o cancelada")
+
+        return {
+            "cancel_at_period_end": subscription.cancelAtPeriodEnd,
+            "canceled_at": subscription.canceledAt.isoformat() if subscription.canceledAt else None
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al verificar cancelación: {str(e)}")
+      
 if __name__ == "__main__":
     if "JWT_SECRET_KEY" not in os.environ:
         print("ADVERTENCIA: JWT_SECRET_KEY no está configurada. Usando valor por defecto.")
