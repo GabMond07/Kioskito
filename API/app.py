@@ -127,7 +127,7 @@ async def shutdown():
         print(f"❌ Error al desconectar Prisma en shutdown: {str(e)}")
 
 # Rutas de autenticación 
-@app.post("/register")
+@app.post("/users/register")
 async def register(request: Request):
     try:
         data = await request.json()
@@ -186,7 +186,7 @@ async def register(request: Request):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al registrar usuario: {str(e)}")
 
-@app.post("/login")
+@app.post("/users/login")
 async def login(request: Request):
     try:
         data = await request.json()
@@ -220,7 +220,7 @@ async def login(request: Request):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al iniciar sesión: {str(e)}")
 
-@app.post("/refresh")
+@app.post("/users/refresh")
 async def refresh_token(request: Request):
     try:
         data = await request.json()
@@ -266,7 +266,7 @@ async def refresh_token(request: Request):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al refrescar token: {str(e)}")
 
-@app.post("/logout")
+@app.post("/users/logout")
 async def logout(
     request: Request,
     authorization: str = Header(..., alias="Authorization")
@@ -394,6 +394,27 @@ async def delete_user(user_id: int, current_user: dict = Depends(get_current_use
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al eliminar usuario: {str(e)}")
 
+# New endpoint to check subscription status
+@app.get("/users/{user_id}/subscription/status")
+async def get_subscription_status(user_id: int, current_user: dict = Depends(get_current_user)):
+    try:
+        # Only the user themselves or an admin (id_rol = 1) can check subscription status
+        if current_user.id != user_id and current_user.id_rol != 1:
+            raise HTTPException(status_code=403, detail="No tienes permisos para verificar esta suscripción")
+
+        # Check for active subscription
+        subscription = await prisma.suscriptions.find_first(
+            where={
+                "id_user": user_id,
+                "status": "active",
+                "end_date": {"gt": datetime.now(timezone.utc)},  # Ensure subscription hasn't expired
+            }
+        )
+
+        return {"has_active_subscription": bool(subscription)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al verificar estado de suscripción: {str(e)}")
+        
 if __name__ == "__main__":
     if "JWT_SECRET_KEY" not in os.environ:
         print("ADVERTENCIA: JWT_SECRET_KEY no está configurada. Usando valor por defecto.")

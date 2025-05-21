@@ -6,6 +6,7 @@ import { Home, Books, Landing, Popular, MyList, Subscription, AdminDashboard } f
 import Layout from "./Layout";
 import AdminLayout from "./AdminLayout";
 import PrivateRoute from "./components/routes/PrivateRoute";
+import LayoutSuscription from "./LayoutSuscription";
 
 const router = createBrowserRouter([
   {
@@ -43,15 +44,6 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-      
-      {
-        path: "/subscription",
-        element: (
-          <PrivateRoute roleRequired={1}>
-            <Subscription />
-          </PrivateRoute>
-        ),
-      },
       {
         path: "/",
         element: <Landing />,
@@ -66,6 +58,19 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute roleRequired={2}>
             <AdminDashboard />
+          </PrivateRoute>
+        ),
+      },
+    ],
+  },
+  {
+    element: <LayoutSuscription />,
+    children: [
+      {
+        path: "/subscription",
+        element: (
+          <PrivateRoute roleRequired={1}>
+            <Subscription />
           </PrivateRoute>
         ),
       },
